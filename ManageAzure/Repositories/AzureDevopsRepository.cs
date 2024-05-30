@@ -17,13 +17,11 @@ namespace ManageAzure.Repositories
         private readonly HttpClient _httpClient;
         private readonly IOptions<AzureDevOpsOptions> _options;
         private readonly ILogger<AzureDevopsRepository> _logger;
-        private readonly IFilesRepository _filesRepository;
 
-        public AzureDevopsRepository(IOptions<AzureDevOpsOptions> options, ILogger<AzureDevopsRepository> logger, IFilesRepository filesRepository)
+        public AzureDevopsRepository(IOptions<AzureDevOpsOptions> options, ILogger<AzureDevopsRepository> logger)
         {
             _options = options;
             _logger = logger;
-            _filesRepository = filesRepository;
 
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($":{_options.Value.PersonalAccessToken}")));
