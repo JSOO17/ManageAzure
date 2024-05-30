@@ -118,13 +118,13 @@ namespace ManageAzure.Repositories
                 new JObject
                 {
                     { "op", "add" },
-                    { "path", "/fields/Custom.Categoria" }, 
+                    { "path", "/fields/Custom.Category" }, 
                     { "value", ticket.Category }
                 }
             ).ToString();
         }
 
-        public async Task CreateIssue(Ticket ticket)
+        public async Task<TicketResponse> CreateIssue(Ticket ticket)
         {
             var config = _options.Value;
             var uri = $"{config.Url}{config.Organization}/{config.Project}/_apis/wit/workitems/${"Issue"}?api-version=5.1";
@@ -138,11 +138,22 @@ namespace ManageAzure.Repositories
                 var response = await _httpClient.PostAsync(uri, content);
 
                 response.EnsureSuccessStatusCode();
+
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                using var jsonDocument = await JsonDocument.ParseAsync(responseStream);
+                var ticketId = jsonDocument.RootElement.GetProperty("id").GetInt32();
+
+                return new TicketResponse
+                {
+                    Id = ticketId
+                };
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error al crear el Work Item:");
                 Console.WriteLine(ex.Message);
+
+                throw;
             }
         }
     }
