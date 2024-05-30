@@ -15,11 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<ServiceBusOptions>(builder.Configuration.GetSection("AzureServiceBus"));
-builder.Services.Configure<AzureBlobOptions>(builder.Configuration.GetSection("AzureBStorage"));
 builder.Services.Configure<AzureDevOpsOptions>(builder.Configuration.GetSection("AzureDevops"));
 builder.Services.AddHostedService<ServiceBusListener>();
 builder.Services.AddTransient<IAzureDevOpsRepository, AzureDevopsRepository>();
-builder.Services.AddTransient<IFilesRepository, AzureBlobRepository>();
 builder.Services.AddTransient<IApiKeyRepository, ApiKeyRepository>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<productsContext>(options =>
