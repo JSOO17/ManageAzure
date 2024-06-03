@@ -33,20 +33,28 @@ namespace ManageAzure.Listeners
         private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
         {
             var messageBody = args.Message.Body.ToString();
-            _logger.LogInformation($"Received message: {messageBody}");
 
             var message = JsonSerializer.Deserialize<MessageModel>(messageBody) ?? throw new Exception(messageBody);
 
-            if(message.Ticket != null)
-            {
-                await _azureServices.CreateIssue(message.Ticket);
-            }
-            else
-            {
-                await _azureServices.UploadFiles(message.File, message.WorkItemId);
-            }
+            _logger.LogInformation($"Received message: File: {message.File.Name}. WorkItemId: {message.WorkItemId}");
 
-            await args.CompleteMessageAsync(args.Message);
+            try
+            {
+                if (message.Ticket != null)
+                {
+                    await _azureServices.CreateIssue(message.Ticket);
+                }
+                else
+                {
+                    await _azureServices.UploadFiles(message.File, message.WorkItemId);
+                }
+
+                await args.CompleteMessageAsync(args.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Something went wrong. {ex}:", ex);
+            }
         }
 
         private Task ProcessErrorAsync(ProcessErrorEventArgs args)
