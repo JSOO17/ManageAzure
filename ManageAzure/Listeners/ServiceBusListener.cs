@@ -40,14 +40,7 @@ namespace ManageAzure.Listeners
 
             try
             {
-                if (message.Ticket != null)
-                {
-                    await _azureServices.CreateIssue(message.Ticket);
-                }
-                else
-                {
-                    await _azureServices.UploadFiles(message.File, message.WorkItemId);
-                }
+                await _azureServices.UploadFiles(message.File, message.WorkItemId);
 
                 await args.CompleteMessageAsync(args.Message);
             }
