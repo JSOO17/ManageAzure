@@ -31,7 +31,7 @@ namespace ManageAzure.Controllers
             {
                 _logger.LogError("Internal Error Server", ex);
 
-                return BadRequest(ex);
+                return StatusCode(500, "something went wrong");
             }
 
         }
