@@ -29,7 +29,7 @@ namespace ManageAzure.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Internal Error Server", ex);
+                _logger.LogError(ex, "Internal Error Server");
 
                 return StatusCode(500, "something went wrong");
             }
